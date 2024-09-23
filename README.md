@@ -1,4 +1,4 @@
-# Mifare Calculator
+# Mifare Classic Calculator
 
 WebApp: [Mifare Calculator](https://skylandersnfc.github.io/Mifare-Calc)
 
