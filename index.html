@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="Description" content="This online tool is for calculating and parsing access bits from sector trailers of Mifare Classic or Mifare Plus cards. It also demonstrates the possibilites of Qt for Webassembly.">
+    <title>Mifare Classic access conditions calculator</title>
+    <style type="text/css">
+      html, body { 
+        padding: 0; 
+        margin : 0 auto; 
+        overflow: auto; 
+        height: 100%
+      }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas {
+        border: 0px none;
+        background-color: white;
+        height:600px;
+        width:100%
+      }
+      /* The contenteditable property is set to true for the canvas in order to support
+         clipboard events. Hide the resulting focus frame and set the cursor back to
+         the default cursor. */
+      canvas { 
+        outline: 0px solid transparent;
+        caret-color: transparent;
+        cursor:default
+      }
+      .textBlock {
+        width: 40em;
+        margin: 0 auto;
+        font-size: 20px
+      }
+    </style>
+  </head>
+  <body onload="init()">
+    <div class="textBlock">
+      <p><big><b>Caution: </b></big>Writing an incorrect value to the access conditions will make the sector inaccessible.</p>
+    </div>
+    <figure style="overflow: visible; display: none;" id="qtspinner">
+      <center style="margin-top:1.5em; line-height:150%">
+        <img src="assets/qtlogo.svg" ;="" width="320;" height="200;" style="display:block"> 
+        <strong>Qt for WebAssembly: mifare_access_bits_calculator</strong>
+        <div id="qtstatus">Downloading/Compiling...</div>
+        <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+      </center>
+    </figure>
+    <canvas id="qtcanvas" oncontextmenu="event.preventDefault()" contenteditable="true" style="display: block; cursor: default;" width="1920" height="600"></canvas>
+
+    <script type="text/javascript">
+        function init() {
+          var spinner = document.querySelector('#qtspinner');
+          var canvas = document.querySelector('#qtcanvas');
+          var status = document.querySelector('#qtstatus')
+
+          var qtLoader = QtLoader({
+              canvasElements : [canvas],
+              showLoader: function(loaderStatus) {
+                  spinner.style.display = 'block';
+                  canvas.style.display = 'none';
+                  status.innerHTML = loaderStatus + "...";
+              },
+              showError: function(errorText) {
+                  status.innerHTML = errorText;
+                  spinner.style.display = 'block';
+                  canvas.style.display = 'none';
+              },
+              showExit: function() {
+                  status.innerHTML = "Application exit";
+                  if (qtLoader.exitCode !== undefined)
+                      status.innerHTML += " with code " + qtLoader.exitCode;
+                  if (qtLoader.exitText !== undefined)
+                      status.innerHTML += " (" + qtLoader.exitText + ")";
+                  spinner.style.display = 'block';
+                  canvas.style.display = 'none';
+              },
+              showCanvas: function() {
+                  spinner.style.display = 'none';
+                  canvas.style.display = 'block';
+              },
+          });
+          qtLoader.loadEmscriptenModule("assets/mifare_access_bits_calculator");
+      }
+    </script>
+    <script type="text/javascript" src="assets/qtloader.js"></script>
+  
+
+</body></html>
